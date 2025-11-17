@@ -11,7 +11,13 @@ M.general = {
         require("conform").format()
       end,
       "formatting",
-    }
+    },
+    ["<leader>lf"] = {
+      function()
+        vim.diagnostic.open_float(nil, { focus = true, border = "rounded" })
+      end,
+      "Show floating diagnostic",
+    },
   },
   v = {
     [">"] = { ">gv", "indent" },

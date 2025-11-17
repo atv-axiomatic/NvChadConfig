@@ -253,6 +253,7 @@ local default_plugins = {
   },
   {
     "christoomey/vim-tmux-navigator",
+    event="VeryLazy",
     cmd = {
       "TmuxNavigateLeft",
       "TmuxNavigateDown",
