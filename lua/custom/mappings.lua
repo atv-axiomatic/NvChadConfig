@@ -1,6 +1,19 @@
 ---@type MappingsTable
 local M = {}
 
+local function get_visual_selection()
+  local start_pos = vim.fn.getpos("v")
+  local end_pos = vim.fn.getpos(".")
+  local mode = vim.fn.visualmode()
+  local region = vim.fn.getregion(start_pos, end_pos, { type = mode })
+
+  if #region == 0 then
+    return ""
+  end
+
+  return table.concat(region, " ")
+end
+
 local function get_neotest()
   require("lazy").load { plugins = { "neotest" } }
   local ok, neotest = pcall(require, "neotest")
@@ -205,6 +218,34 @@ M.general = {
   },
   v = {
     [">"] = { ">gv", "indent" },
+    ["<leader>fz"] = {
+      function()
+        local text = get_visual_selection()
+        if text ~= "" then
+          require("telescope.builtin").current_buffer_fuzzy_find({ default_text = text })
+        end
+      end,
+      "Find selection in buffer",
+    },
+    ["<leader>fw"] = {
+      function()
+        local text = get_visual_selection()
+        if text == "" then
+          return
+        end
+
+        vim.ui.input({ prompt = "Grep glob (e.g. *.tsx, empty = all): " }, function(glob)
+          local opts = { default_text = text }
+          if glob and glob ~= "" then
+            opts.additional_args = function()
+              return { "--glob", glob }
+            end
+          end
+          require("telescope.builtin").live_grep(opts)
+        end)
+      end,
+      "Grep selection (optional glob)",
+    },
   },
 }
 
