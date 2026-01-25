@@ -244,14 +244,6 @@ local default_plugins = {
   },
 
   {
-    "neoclide/coc.nvim",
-    branch = "release",
-    lazy = false,
-    config = function()
-      require "plugins.configs.coc"
-    end,
-  },
-  {
     "christoomey/vim-tmux-navigator",
     event="VeryLazy",
     cmd = {

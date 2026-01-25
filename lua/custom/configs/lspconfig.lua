@@ -1,15 +1,15 @@
 local on_attach = require("plugins.configs.lspconfig").on_attach
 local capabilities = require("plugins.configs.lspconfig").capabilities
 
-local lspconfig = require("lspconfig")
-local util = require "lspconfig/util"
-
-lspconfig.gopls.setup {
+vim.lsp.config("gopls", {
   on_attach = on_attach,
   capabilities = capabilities,
   cmd = { "gopls" },
-  filetpyes = { "go", "gomod", "gowork", "gotmpl", },
-  root_dir = util.root_pattern("go.work", "go.mod", ".git"),
+  filetypes = { "go", "gomod", "gowork", "gotmpl" },
+  root_dir = function(fname)
+    local root = vim.fs.find({ "go.work", "go.mod", ".git" }, { path = fname, upward = true })[1]
+    return root and vim.fs.dirname(root) or nil
+  end,
   settings = {
     gopls = {
       completeUnimported = true,
@@ -19,4 +19,6 @@ lspconfig.gopls.setup {
       },
     },
   },
-}
+})
+
+vim.lsp.enable { "gopls" }

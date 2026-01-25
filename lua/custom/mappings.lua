@@ -1,6 +1,22 @@
 ---@type MappingsTable
 local M = {}
 
+local function get_neotest()
+  require("lazy").load { plugins = { "neotest" } }
+  local ok, neotest = pcall(require, "neotest")
+  if not ok then
+    return nil
+  end
+
+  local adapter_ids = neotest.state.adapter_ids()
+  if not adapter_ids or #adapter_ids == 0 then
+    vim.notify("Neotest: no adapters for this project.", vim.log.levels.WARN)
+    return nil
+  end
+
+  return neotest
+end
+
 M.general = {
   n = {
     [";"] = { ":", "enter command mode", opts = { nowait = true } },
@@ -17,6 +33,174 @@ M.general = {
         vim.diagnostic.open_float(nil, { focus = true, border = "rounded" })
       end,
       "Show floating diagnostic",
+    },
+    ["[d"] = {
+      function()
+        vim.diagnostic.goto_prev()
+      end,
+      "Prev diagnostic",
+    },
+    ["]d"] = {
+      function()
+        vim.diagnostic.goto_next()
+      end,
+      "Next diagnostic",
+    },
+    ["<leader>rn"] = {
+      function()
+        vim.lsp.buf.rename()
+      end,
+      "Rename symbol",
+    },
+    ["<leader>ca"] = {
+      function()
+        vim.lsp.buf.code_action()
+      end,
+      "Code action",
+    },
+    ["<leader>ff"] = {
+      function()
+        require("telescope.builtin").find_files()
+      end,
+      "Find files",
+    },
+    ["<leader>fb"] = {
+      function()
+        require("telescope.builtin").buffers()
+      end,
+      "Buffers",
+    },
+    ["<leader>fd"] = {
+      function()
+        require("telescope.builtin").diagnostics()
+      end,
+      "Diagnostics",
+    },
+    ["<leader>fs"] = {
+      function()
+        require("telescope.builtin").lsp_document_symbols()
+      end,
+      "Document symbols",
+    },
+    ["<leader>xx"] = {
+      "<cmd>Trouble diagnostics toggle<CR>",
+      "Diagnostics (Trouble)",
+    },
+    ["<leader>xq"] = {
+      "<cmd>Trouble qflist toggle<CR>",
+      "Quickfix (Trouble)",
+    },
+    ["<leader>xt"] = {
+      "<cmd>TodoTrouble<CR>",
+      "Todo list",
+    },
+    ["<leader>ws"] = { "<cmd>SessionSave<CR>", "Save session" },
+    ["<leader>wr"] = { "<cmd>SessionRestore<CR>", "Restore session" },
+    ["<leader>u"] = { "<cmd>UndotreeToggle<CR>", "Undo tree" },
+    ["zR"] = { "<cmd>UfoOpenAll<CR>", "Open all folds" },
+    ["zM"] = { "<cmd>UfoCloseAll<CR>", "Close all folds" },
+    ["<leader>a"] = {
+      function()
+        require("harpoon"):list():add()
+      end,
+      "Harpoon add file",
+    },
+    ["<leader>ha"] = {
+      function()
+        local harpoon = require("harpoon")
+        harpoon.ui:toggle_quick_menu(harpoon:list())
+      end,
+      "Harpoon menu",
+    },
+    ["<leader>1"] = {
+      function()
+        require("harpoon"):list():select(1)
+      end,
+      "Harpoon file 1",
+    },
+    ["<leader>2"] = {
+      function()
+        require("harpoon"):list():select(2)
+      end,
+      "Harpoon file 2",
+    },
+    ["<leader>3"] = {
+      function()
+        require("harpoon"):list():select(3)
+      end,
+      "Harpoon file 3",
+    },
+    ["<leader>4"] = {
+      function()
+        require("harpoon"):list():select(4)
+      end,
+      "Harpoon file 4",
+    },
+    ["<leader>hn"] = {
+      function()
+        require("harpoon"):list():next()
+      end,
+      "Harpoon next",
+    },
+    ["<leader>hp"] = {
+      function()
+        require("harpoon"):list():prev()
+      end,
+      "Harpoon prev",
+    },
+    ["<leader>tt"] = {
+      function()
+        local neotest = get_neotest()
+        if neotest and neotest.run then
+          neotest.run.run()
+        end
+      end,
+      "Test nearest",
+    },
+    ["<leader>tf"] = {
+      function()
+        local neotest = get_neotest()
+        if neotest and neotest.run then
+          neotest.run.run(vim.fn.expand "%")
+        end
+      end,
+      "Test file",
+    },
+    ["<leader>ts"] = {
+      function()
+        local neotest = get_neotest()
+        if neotest and neotest.run then
+          neotest.run.run { suite = true }
+        end
+      end,
+      "Test suite",
+    },
+    ["<leader>tS"] = {
+      function()
+        local neotest = get_neotest()
+        if neotest and neotest.run then
+          neotest.run.stop()
+        end
+      end,
+      "Stop tests",
+    },
+    ["<leader>to"] = {
+      function()
+        local neotest = get_neotest()
+        if neotest and neotest.output then
+          neotest.output.open { enter = true }
+        end
+      end,
+      "Test output",
+    },
+    ["<leader>tp"] = {
+      function()
+        local neotest = get_neotest()
+        if neotest and neotest.summary then
+          neotest.summary.toggle()
+        end
+      end,
+      "Test panel",
     },
   },
   v = {
