@@ -31,11 +31,14 @@ local plugins = {
   },
   {
     "rmagatti/auto-session",
-    cmd = { "SessionSave", "SessionRestore" },
+    cmd = { "AutoSession" },
     opts = {
       auto_restore_enabled = false,
       auto_save_enabled = true,
       auto_session_suppress_dirs = { "~/", "~/Downloads", "/" },
+      bypass_session_save_file_types = { "NvimTree" },
+      pre_save_cmds = { "silent! NvimTreeClose" },
+      post_restore_cmds = { "silent! NvimTreeClose" },
     },
   },
   {

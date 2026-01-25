@@ -2,7 +2,7 @@
 local M = {}
 
 M.ui = {
-  theme = 'dark_horizon',
+  theme = 'aquarium',
 
   ------------------------------- nvchad_ui modules -----------------------------
   statusline = {
