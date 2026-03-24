@@ -110,8 +110,26 @@ M.general = {
     ["<leader>ws"] = { "<cmd>AutoSession save<CR>", "Save session" },
     ["<leader>wr"] = { "<cmd>AutoSession restore<CR>", "Restore session" },
     ["<leader>u"] = { "<cmd>UndotreeToggle<CR>", "Undo tree" },
-    ["zR"] = { "<cmd>UfoOpenAll<CR>", "Open all folds" },
-    ["zM"] = { "<cmd>UfoCloseAll<CR>", "Close all folds" },
+    ["zR"] = {
+      function()
+        require("lazy").load { plugins = { "nvim-ufo" } }
+        local ok, ufo = pcall(require, "ufo")
+        if ok then
+          ufo.openAllFolds()
+        end
+      end,
+      "Open all folds",
+    },
+    ["zM"] = {
+      function()
+        require("lazy").load { plugins = { "nvim-ufo" } }
+        local ok, ufo = pcall(require, "ufo")
+        if ok then
+          ufo.closeAllFolds()
+        end
+      end,
+      "Close all folds",
+    },
     ["<leader>a"] = {
       function()
         require("harpoon"):list():add()
@@ -215,6 +233,14 @@ M.general = {
       end,
       "Test panel",
     },
+    ["<leader>mi"] = { "<cmd>MagmaInit<CR>", "Magma init" },
+    ["<leader>mo"] = { "<cmd>MagmaShowOutput<CR>", "Magma show output" },
+    ["<leader>mD"] = { "<cmd>MagmaDelete<CR>", "Magma delete cell" },
+    ["<leader>mR"] = { "<cmd>MagmaRestart!<CR>", "Magma restart kernel" },
+    ["<C-b>j"] = { "<cmd>resize +2<CR>", "Resize down" },
+    ["<C-b>k"] = { "<cmd>resize -2<CR>", "Resize up" },
+    ["<C-b>h"] = { "<cmd>vertical resize -2<CR>", "Resize left" },
+    ["<C-b>l"] = { "<cmd>vertical resize +2<CR>", "Resize right" },
   },
   v = {
     [">"] = { ">gv", "indent" },
@@ -238,7 +264,11 @@ M.general = {
           local opts = { default_text = text }
           if glob and glob ~= "" then
             opts.additional_args = function()
-              return { "--glob", glob }
+              return { "--fixed-strings", "--glob", glob }
+            end
+          else
+            opts.additional_args = function()
+              return { "--fixed-strings" }
             end
           end
           require("telescope.builtin").live_grep(opts)
@@ -246,6 +276,7 @@ M.general = {
       end,
       "Grep selection (optional glob)",
     },
+    ["<leader>mv"] = { "<cmd>MagmaEvaluateVisual<CR>", "Magma eval selection" },
   },
 }
 

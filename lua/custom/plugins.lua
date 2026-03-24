@@ -75,6 +75,14 @@ local plugins = {
     opts = {},
   },
   {
+    "dccsillag/magma-nvim",
+    build = ":UpdateRemotePlugins",
+    lazy = false,
+    config = function()
+      require "custom.configs.magma"
+    end,
+  },
+  {
     "numToStr/Comment.nvim",
     dependencies = { "JoosepAlviste/nvim-ts-context-commentstring" },
     opts = function()
